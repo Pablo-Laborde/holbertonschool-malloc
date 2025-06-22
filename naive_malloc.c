@@ -25,8 +25,12 @@ void *naive_malloc(size_t size)
 		next_mem = lim;
 	dif = (intptr_t)lim - (intptr_t)next_mem;
 	if ((size_t)dif < (size + SS))
-		if (brk((void *)((intptr_t)lim + SS + size)) == -1)
+		if (brk((void *)((intptr_t)lim + 4 * KB)) == -1)
 			return (NULL);
+	/*
+	*	if (brk((void *)((intptr_t)lim + SS + size)) == -1)
+	*		return (NULL);
+	*/
 	header = (size_t *)next_mem;
 	*header = size;
 	cur_mem = (void *)((intptr_t)next_mem + SS);
