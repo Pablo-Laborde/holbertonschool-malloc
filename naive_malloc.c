@@ -1,6 +1,8 @@
 #include "malloc.h"
 
 
+#define SS sizeof(size_t)
+
 #define KB 1024
 #define MB (KB * 1024)
 
@@ -13,17 +15,20 @@
 */
 void *naive_malloc(size_t size)
 {
-	void *start_break = NULL, *available_mem = NULL;
-	intptr_t address = 0;
+	static void *lim = NULL, *cur_mem = NULL, *next_mem = NULL;
+	intptr_t dif = 0;
 	size_t  *header = NULL;
 
-	start_break = sbrk(0);
-	address = (intptr_t)start_break + sizeof(size_t);
-	available_mem = (void *)address;
-	address += size;
-	if (brk((void *)address) == -1)
-		return (NULL);
-	header = (size_t *)start_break;
+	lim = sbrk(0);
+	if (!next_mem)
+		next_mem = (void *)((intptr_t)lim + SS);
+	dif = (intptr_t)lim - (intptr_t)next_mem;
+	if ((size_t)dif < size)
+		if (brk((void *)((intptr_t)lim + SS + size)) == -1)
+			return (NULL);
+	cur_mem = next_mem;
+	next_mem = (void *)((intptr_t)cur_mem + size + SS);
+	header = (size_t *)((intptr_t)cur_mem - SS);
 	*header = size;
-	return (available_mem);
+	return (cur_mem);
 }
