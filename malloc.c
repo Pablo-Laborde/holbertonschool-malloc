@@ -2,6 +2,26 @@
 
 
 
+#define SS sizeof(size_t)
+
+#define PS sysconf(_SC_PAGESIZE)
+
+
+
+/**
+* align_ptr - func
+* @ptr: void *
+* Return: void *
+*/
+void *align_ptr(void *ptr)
+{
+	intptr_t adv = 0;
+
+	adv = 8 - ((intptr_t)ptr % 8);
+	return ((void *)((intptr_t)ptr + adv));
+}
+
+
 /**
 * _malloc - func
 * @size: size_t
