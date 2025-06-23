@@ -8,6 +8,20 @@
 
 
 /**
+* align_ptr - func
+* @ptr: void *
+* Return: void *
+*/
+void *align_ptr(void *ptr)
+{
+	intptr_t adv = 0;
+
+	adv = 8 - ((intptr_t)ptr % 8);
+	return ((void *)((intptr_t)ptr + adv));
+}
+
+
+/**
 * naive_malloc - func
 * @size: size_t
 * Return: void *
@@ -22,6 +36,8 @@ void *naive_malloc(size_t size)
 	lim = sbrk(0);
 	if (!next_mem)
 		next_mem = lim;
+	if ((intptr_t)next_mem % 8)
+		next_mem = align_ptr(next_mem);
 	dif = (intptr_t)lim - (intptr_t)next_mem;
 	if ((size_t)dif < (size + SS))
 		if (brk((void *)((intptr_t)lim + PS)) == -1)
