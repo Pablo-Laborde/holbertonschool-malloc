@@ -101,6 +101,7 @@ void *_malloc(size_t size)
 	if (!end)
 	{
 		end = align_ptr(lim);
+		printf("%ld\n", (intptr_t)end % 8);
 		first_chunk = end;
 	}
 	bk += (!((bk + hd) % 8)) ? 0 : 8 - (bk + hd) % 8;
