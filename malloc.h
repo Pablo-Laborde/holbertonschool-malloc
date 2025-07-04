@@ -8,7 +8,6 @@
 #include <unistd.h>
 
 
-
 /* Functions prototypes */
 void *naive_malloc(size_t size);
 void *exact_malloc(size_t size);
