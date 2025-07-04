@@ -12,8 +12,6 @@
 */
 void _free(void *ptr)
 {
-	void *aux = NULL;
-
 	if (ptr)
 		*((char *)((intptr_t)ptr - 1)) = 1;
 }
