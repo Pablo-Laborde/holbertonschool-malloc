@@ -2,6 +2,12 @@
 #define MALLOC_H
 
 
+/* Macros */
+#define SS sizeof(size_t)
+#define PS sysconf(_SC_PAGESIZE)
+
+
+
 /* Libraries */
 #include <stdio.h>
 

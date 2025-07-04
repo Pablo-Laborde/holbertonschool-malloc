@@ -2,12 +2,6 @@
 
 
 
-#define SS sizeof(size_t)
-
-#define PS sysconf(_SC_PAGESIZE)
-
-
-
 /**
 * align_ptr - func
 * @ptr: void *
@@ -50,8 +44,8 @@ int expand_limit(size_t size, intptr_t dif)
 void *mem_head(void *chunk, size_t size)
 {
 	*(size_t *)chunk = size;
-	*(char *)((intptr_t)chunk + SS) = 0;
-	return ((void *)((intptr_t)chunk + SS + 1));
+	*(size_t *)((intptr_t)chunk + SS) = 0;
+	return ((void *)((intptr_t)chunk + 2 * SS));
 }
 
 
@@ -71,15 +65,15 @@ void *scan_free(void *first_chunk, void *end, size_t size)
 	{
 		b = a;
 		free_size = 0;
-		while (*((char *)((intptr_t)b + SS)))
+		while (*((size_t *)((intptr_t)b + SS)))
 		{
 			free_size += *((size_t *)((intptr_t)b));
 			if (free_size >= size)
 				return (mem_head(a, free_size));
-			b = (void *)((intptr_t)b + (size_t *)((intptr_t)b) + SS + 1);
-			free_size += SS + 1;
+			b = (void *)((intptr_t)b + (size_t *)((intptr_t)b) + 2 * SS);
+			free_size += 2 * SS;
 		}
-		a = (void *)((intptr_t)a + *(size_t *)((intptr_t)a) + SS + 1);
+		a = (void *)((intptr_t)a + *(size_t *)((intptr_t)a) + 2 * SS);
 	}
 	return (NULL);
 }
@@ -95,13 +89,12 @@ void *_malloc(size_t size)
 	static void *end, *first_chunk;
 	void *lim = NULL, *mem = NULL;
 	intptr_t dif = 0;
-	size_t bk = size, hd = SS + 1;
+	size_t bk = size, hd = 2 * SS;
 
 	lim = sbrk(0);
 	if (!end)
 	{
 		end = align_ptr(lim);
-		printf("%ld\n", (intptr_t)end % 8);
 		first_chunk = end;
 	}
 	bk += (!((bk + hd) % 8)) ? 0 : 8 - (bk + hd) % 8;
